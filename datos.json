@@ -1,0 +1,36 @@
+{
+    "inventario": [
+        {
+            "key": "teclado",
+            "value": "500",
+            "cant": "2"
+        },
+        {
+            "key": "pollo",
+            "value": "50",
+            "cant": "2"
+        },
+        {
+            "key": "mouse",
+            "value": "200",
+            "cant": "3"
+        },
+        {
+            "key": "manzana",
+            "value": "10",
+            "cant": "8"
+        }
+    ],
+    "cola": [
+        {
+            "id": 2,
+            "solicitante": "mike",
+            "producto": "mouse"
+        },
+        {
+            "id": 3,
+            "solicitante": "alejandra",
+            "producto": "manzana"
+        }
+    ]
+}

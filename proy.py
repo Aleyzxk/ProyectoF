@@ -1,7 +1,61 @@
-import os
+import os, json
 
 #programa de colas de pedidos y almacenamiento de productos.
+import json
 
+def guardar_datos(inventario, cola, archivo="datos.json"):
+    data = {
+        "inventario": [],
+        "cola": []
+    }
+
+    # Guardar inventario
+    for slot in inventario.slots:
+        if slot is not None and slot != inventario._deleted:
+            data["inventario"].append({
+                "key": slot.key,
+                "value": slot.value,
+                "cant": slot.cant
+            })
+
+    # Guardar cola
+    actual = cola.head
+    while actual is not None:
+        ped = actual.data
+        data["cola"].append({
+            "id": ped.id,
+            "solicitante": ped.solicitante,
+            "producto": ped.producto
+        })
+        actual = actual.next
+
+    with open(archivo, "w") as f:
+        json.dump(data, f, indent=4)
+
+    print(" Datos guardados.")
+    
+def cargar_datos(inventario, cola, archivo="datos.json"):
+    if not os.path.exists(archivo):
+        return  
+
+    with open(archivo, "r") as f:
+        data = json.load(f)
+
+    # Cargar inventario
+    for item in data["inventario"]:
+        inventario.put(item["key"], item["value"], item["cant"])
+
+    # Cargar cola
+    for p in data["cola"]:
+        nuevo = pedido(p["solicitante"], p["producto"])
+        nuevo.id = p["id"]  # conservar ID original
+        cola.enqueue(nuevo)
+
+    # Ajustar el contador de IDs
+    if data["cola"]:
+        pedido._contador_id = max(p["id"] for p in data["cola"]) + 1
+
+    
 class HashItem:
     def __init__(self, key, value, cant):
         self.key = key
@@ -180,8 +234,10 @@ def colaa():
 inv = HashTable()
 cola = queue(inv)
 
+cargar_datos(inv, cola)
+
 while True:
-    
+    #el menu del programa
     os.system('cls')
     print("sistema de cola de pedidos e inventario")
     print('que desea hacer?')
@@ -195,10 +251,7 @@ while True:
     elif resp == 2:
         colaa()
     elif resp == 3:
+        guardar_datos(inv,cola)
         break
-
-
-
-
 
 
